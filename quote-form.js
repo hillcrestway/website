@@ -1,89 +1,41 @@
-// Wait for the DOM to fully load
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize EmailJS
   emailjs.init("VTravprD8X1ELze4f"); // Replace with your EmailJS Public Key
 
-  // Navbar Toggle for Mobile
-  const menuToggle = document.querySelector(".menu-toggle");
-  const navLinks = document.querySelector(".nav-links");
-
-  if (menuToggle && navLinks) {
-    menuToggle.addEventListener("click", () => {
-      navLinks.classList.toggle("active");
-    });
-  }
-
-  // Smooth Scrolling
-  const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
-  smoothScrollLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-      event.preventDefault();
-      const targetId = link.getAttribute("href").substring(1);
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        window.scrollTo({
-          top: targetElement.offsetTop - 80, // Adjust offset for fixed header
-          behavior: "smooth",
-        });
-      }
-    });
-  });
-
-  // Form Validation & EmailJS Submission
+  // Form Submission Handling
   const form = document.getElementById("quoteForm");
 
   if (form) {
     form.addEventListener("submit", (event) => {
       event.preventDefault(); // Prevent default form submission
 
-      const name = document.getElementById("name");
-      const email = document.getElementById("email");
-      const service = document.getElementById("service");
-      const budget = document.getElementById("budget");
-      const details = document.getElementById("details");
+      // Get form values
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const service = document.getElementById("service").value;
+      const budget = document.getElementById("budget").value;
+      const details = document.getElementById("details").value.trim();
 
       // Simple validation
-      if (!name.value.trim()) {
-        alert("Please enter your name.");
-        name.focus();
+      if (!name || !email || !service || !budget || !details) {
+        alert("Please fill in all required fields.");
         return;
       }
 
-      if (!email.value.trim() || !/\S+@\S+\.\S+/.test(email.value)) {
-        alert("Please enter a valid email address.");
-        email.focus();
-        return;
-      }
-
-      if (!service.value) {
-        alert("Please select a service.");
-        service.focus();
-        return;
-      }
-
-      if (!budget.value) {
-        alert("Please select a budget.");
-        budget.focus();
-        return;
-      }
-
-      if (!details.value.trim()) {
-        alert("Please provide details about your project.");
-        details.focus();
-        return;
-      }
-
-      // Prepare data for EmailJS
+      // EmailJS template parameters
       const templateParams = {
-        user_name: name.value,
-        user_email: email.value,
-        selected_service: service.value,
-        budget: budget.value,
-        project_details: details.value,
+        user_name: name,
+        user_email: email,
+        user_phone: phone || "Not provided",
+        selected_service: service,
+        budget: budget,
+        project_details: details,
       };
 
-      // Send email via EmailJS
-      emailjs.send("service_rjn2m59","template_wtrdtmd", templateParams)
+      // Send email using EmailJS
+      emailjs
+        .send("service_rjn2m59", "template_svf97kq", templateParams)
         .then(() => {
           alert("Your request has been submitted successfully!");
           form.reset();
@@ -94,14 +46,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
   }
-
-  // Close mobile nav on link click
-  const navItems = document.querySelectorAll(".nav-links li a");
-  navItems.forEach((item) => {
-    item.addEventListener("click", () => {
-      if (navLinks.classList.contains("active")) {
-        navLinks.classList.remove("active");
-      }
-    });
-  });
 });
