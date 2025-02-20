@@ -1,5 +1,8 @@
 // Wait for the DOM to fully load
 document.addEventListener("DOMContentLoaded", () => {
+  // Initialize EmailJS
+  emailjs.init("VTravprD8X1ELze4f"); // Replace with your EmailJS Public Key
+
   // Navbar Toggle for Mobile
   const menuToggle = document.querySelector(".menu-toggle");
   const navLinks = document.querySelector(".nav-links");
@@ -26,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Form Validation
+  // Form Validation & EmailJS Submission
   const form = document.getElementById("quoteForm");
 
   if (form) {
@@ -70,9 +73,25 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // If all fields are valid, submit the form
-      alert("Your request has been submitted successfully!");
-      form.reset();
+      // Prepare data for EmailJS
+      const templateParams = {
+        user_name: name.value,
+        user_email: email.value,
+        selected_service: service.value,
+        budget: budget.value,
+        project_details: details.value,
+      };
+
+      // Send email via EmailJS
+      emailjs.send("service_rjn2m59","template_wtrdtmd", templateParams)
+        .then(() => {
+          alert("Your request has been submitted successfully!");
+          form.reset();
+        })
+        .catch((error) => {
+          console.error("EmailJS Error:", error);
+          alert("Something went wrong. Please try again.");
+        });
     });
   }
 
